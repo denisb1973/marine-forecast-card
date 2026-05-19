@@ -161,7 +161,15 @@ class MarineForecastCard extends HTMLElement {
             url('${spot.image}');
         "
       >
-        <div class="spot-title">${spot.name}</div>
+        <div class="spot-header">
+          <div class="spot-title">${spot.name}</div>
+
+          ${
+            mapsUrl
+              ? `<button class="map-button" onclick="window.open('${mapsUrl}', '_blank')">📍</button>`
+              : ""
+  }
+</div>
 
         <div class="badge" style="
           border-color:${s.color};
