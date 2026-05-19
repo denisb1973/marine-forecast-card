@@ -153,9 +153,9 @@ class MarineForecastCard extends HTMLElement {
     return `
       <div
         class="spot"
-        onclick="${mapsUrl ? `window.open('${mapsUrl}', '_blank')` : ''}"
+        
         style="
-          cursor:${mapsUrl ? 'pointer' : 'default'};
+          
           background-image:
             linear-gradient(rgba(0,15,35,0.30), rgba(0,10,25,0.88)),
             url('${spot.image}');
@@ -349,6 +349,28 @@ class MarineForecastCard extends HTMLElement {
             font-size: 25px;
             font-weight: 900;
             text-shadow: 0 0 12px black;
+          }
+          .spot-header {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+          }
+
+          .map-button {
+            position: absolute;
+            right: 8px;
+            top: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(126,232,255,0.55);
+            background: rgba(0,20,40,0.72);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+           box-shadow: 0 0 12px rgba(0,200,255,0.45);
           }
 
           .badge {
