@@ -198,9 +198,13 @@ class MarineForecastCard extends HTMLElement {
             font-weight: 900;
             box-shadow: 0 0 8px rgba(0,100,150,0.25);
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
           }
 
           .days button.active {
+            appearance: none !important;
+            -webkit-appearance: none !important;
             background: linear-gradient(135deg, rgba(0,220,255,0.95), rgba(0,90,180,0.95)) !important;
             box-shadow: 0 0 22px rgba(0,220,255,0.95) !important;
             border: 1px solid rgba(120,240,255,0.95) !important;
