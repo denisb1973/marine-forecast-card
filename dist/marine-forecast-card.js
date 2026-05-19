@@ -13,19 +13,19 @@ class MarineForecastCard extends HTMLElement {
     return this._hass?.states?.[entity]?.state ?? "-";
   }
   directionName(deg) {
-  const d = parseFloat(deg);
-  if (isNaN(d)) return "-";
+    const d = parseFloat(deg);
+    if (isNaN(d)) return "-";
 
-  const dirs = [
-    "Nord", "Nord-Est", "Est", "Sud-Est",
-    "Sud", "Sud-Ouest", "Ouest", "Nord-Ouest"
-  ];
+    const dirs = [
+      "Nord", "Nord-Est", "Est", "Sud-Est",
+      "Sud", "Sud-Ouest", "Ouest", "Nord-Ouest"
+    ];
 
-  const arrows = ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"];
-  const index = Math.round(d / 45) % 8;
+    const arrows = ["↓", "↙", "←", "↖", "↑", "↗", "→", "↘"];
+    const index = Math.round(d / 45) % 8;
 
-  return `${Math.round(d)}° ${arrows[index]} ${dirs[index]}`;
-}
+    return `${Math.round(d)}° ${arrows[index]} ${dirs[index]}`;
+  }
 
   forecast(entity, offset) {
     const attrs = this._hass?.states?.[entity]?.attributes || {};
