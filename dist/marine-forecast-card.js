@@ -33,11 +33,42 @@ class MarineForecastCard extends HTMLElement {
     };
   }
 
-  status(h) {
-    h = parseFloat(h || 0);
-    if (h < 0.4) return { txt: "BON", color: "#5cff6d" };
-    if (h < 0.8) return { txt: "JOUABLE", color: "#ffcc4d" };
-    return { txt: "MAUVAIS", color: "#ff5c5c" };
+  status(data, currentVelocity) {
+    const wave = parseFloat(data.wave || 99);
+    const period = parseFloat(data.period || 99);
+    const current = parseFloat(currentVelocity || 99);
+
+    let score = 0;
+
+    // HOULE
+    if (wave < 0.3) score += 4;
+    else if (wave < 0.5) score += 3;
+    else if (wave < 0.8) score += 2;
+    else if (wave < 1.2) score += 1;
+
+    // PÉRIODE
+    if (period < 4) score += 3;
+    else if (period < 6) score += 2;
+    else if (period < 8) score += 1;
+
+    // COURANT
+    if (current < 0.2) score += 3;
+    else if (current < 0.5) score += 2;
+    else if (current < 0.8) score += 1;
+
+    if (score >= 9) {
+      return { txt: "EXCELLENT", color: "#00ff88", score };
+    }
+
+    if (score >= 7) {
+      return { txt: "BON", color: "#5cff6d", score };
+    }
+
+    if (score >= 4) {
+      return { txt: "JOUABLE", color: "#ffcc4d", score };
+    }
+
+    return { txt: "MAUVAIS", color: "#ff5c5c", score };
   }
 
   conclusion(datas) {
@@ -77,8 +108,8 @@ class MarineForecastCard extends HTMLElement {
   }
 
   spotCard(spot, data) {
-    const s = this.status(data.wave);
     const currentVelocity = this.getState(spot.current_velocity_entity);
+    const s = this.status(data, currentVelocity);
     const currentDirection = this.getState(spot.current_direction_entity);
 
     return `
@@ -93,7 +124,7 @@ class MarineForecastCard extends HTMLElement {
           color:${s.color};
           box-shadow:0 0 24px ${s.color};
         ">
-          ${s.txt}
+          ${s.txt}<br><small>${s.score}/10</small>
         </div>
 
         <div class="grid-info">
@@ -275,11 +306,16 @@ class MarineForecastCard extends HTMLElement {
             border: 4px solid;
             border-radius: 50%;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: 900;
             font-size: 17px;
             background: rgba(0,0,0,0.42);
+          }
+          .badge small {
+            font-size: 11px;
+            opacity: 0.85;
           }
 
           .grid-info {
