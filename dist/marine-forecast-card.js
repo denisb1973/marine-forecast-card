@@ -12,6 +12,20 @@ class MarineForecastCard extends HTMLElement {
   getState(entity) {
     return this._hass?.states?.[entity]?.state ?? "-";
   }
+  directionName(deg) {
+  const d = parseFloat(deg);
+  if (isNaN(d)) return "-";
+
+  const dirs = [
+    "Nord", "Nord-Est", "Est", "Sud-Est",
+    "Sud", "Sud-Ouest", "Ouest", "Nord-Ouest"
+  ];
+
+  const arrows = ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"];
+  const index = Math.round(d / 45) % 8;
+
+  return `${Math.round(d)}° ${arrows[index]} ${dirs[index]}`;
+}
 
   forecast(entity, offset) {
     const attrs = this._hass?.states?.[entity]?.attributes || {};
@@ -149,11 +163,11 @@ class MarineForecastCard extends HTMLElement {
 
         <div class="grid-info">
           <div>🌊<span>${data.wave} m</span><small>HOULE</small></div>
-          <div>🧭<span>${data.dir}°</span><small>DIR HOULE</small></div>
+          <div>🧭<span>${this.directionName(data.dir)}</span><small>DIR HOULE</small></div>
           <div>⏱<span>${data.period} s</span><small>PÉRIODE</small></div>
           <div>🌡<span>${data.temp}°C</span><small>MER</small></div>
           <div>〰️<span>${currentVelocity}</span><small>COURANT</small></div>
-          <div>🧭<span>${currentDirection}°</span><small>DIR COURANT</small></div>
+          <div>🧭<span>${this.directionName(currentDirection)}</span><small>DIR COURANT</small></div>
         </div>
       </div>
     `;
