@@ -146,11 +146,21 @@ class MarineForecastCard extends HTMLElement {
     const s = this.status(data, currentVelocity);
     const currentDirection = this.getState(spot.current_direction_entity);
 
+    const mapsUrl = spot.lat && spot.lon
+      ? `https://www.google.com/maps?q=${spot.lat},${spot.lon}`
+      : null;
+
     return `
-      <div class="spot" style="background-image:
-        linear-gradient(rgba(0,15,35,0.30), rgba(0,10,25,0.88)),
-        url('${spot.image}');
-      ">
+      <div
+        class="spot"
+        onclick="${mapsUrl ? `window.open('${mapsUrl}', '_blank')` : ''}"
+        style="
+          cursor:${mapsUrl ? 'pointer' : 'default'};
+          background-image:
+            linear-gradient(rgba(0,15,35,0.30), rgba(0,10,25,0.88)),
+            url('${spot.image}');
+        "
+      >
         <div class="spot-title">${spot.name}</div>
 
         <div class="badge" style="
