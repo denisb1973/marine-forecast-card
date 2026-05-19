@@ -134,11 +134,35 @@ class MarineForecastCard extends HTMLElement {
         <div class="wrapper">
 
           <div class="days">
-            ${days.map(day => `
-              <button class="${this.selectedDay === day ? "active" : ""}" data-day="${day}">
-                ${day}
-              </button>
-            `).join("")}
+            ${days.map(day => {
+  const dayOffset = offsetMap[day] ?? 0;
+  const dayDatas = spots.map(spot => ({
+    name: spot.name,
+    data: this.forecast(spot.forecast_entity, dayOffset),
+    spot
+  }));
+
+  const dayConclusion = this.conclusion(dayDatas);
+  const active = this.selectedDay === day ? "active" : "";
+
+  return `
+    <button
+      class="${active}"
+      data-day="${day}"
+      style="
+       border-color:${dayConclusion.color};
+       box-shadow:0 0 18px ${dayConclusion.color};
+       background: linear-gradient(
+         135deg,
+         ${dayConclusion.color}55,
+         rgba(0,20,40,0.95)
+       );
+      "
+    >
+      ${day}
+    </button>
+  `;
+}).join("")}
           </div>
 
           <div class="content">
