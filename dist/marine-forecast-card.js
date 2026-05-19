@@ -72,9 +72,21 @@ class MarineForecastCard extends HTMLElement {
   }
 
   conclusion(datas) {
-    const best = datas
-      .map(d => ({ name: d.name, h: parseFloat(d.data.wave || 99) }))
-      .sort((a, b) => a.h - b.h)[0];
+    const ranked = datas
+      .map(d => {
+        const currentVelocity = this.getState(d.spot.current_velocity_entity);
+        const s = this.status(d.data, currentVelocity);
+
+        return {
+          name: d.name,
+          score: s.score,
+          status: s.txt,
+          color: s.color
+        };
+      })
+      .sort((a, b) => b.score - a.score);
+
+    const best = ranked[0];
 
     if (!best) {
       return {
@@ -84,28 +96,36 @@ class MarineForecastCard extends HTMLElement {
       };
     }
 
-    if (best.h < 0.4) {
+    if (best.score >= 9) {
       return {
-        txt: "CHASSE RECOMMANDÉE",
-        sub: `Conditions favorables • ${best.name}`,
-        color: "#5cff6d"
+        txt: `🏆 MEILLEUR SPOT : ${best.name}`,
+        sub: `Conditions excellentes • ${best.score}/10`,
+        color: best.color
       };
     }
 
-    if (best.h < 0.8) {
+    if (best.score >= 7) {
       return {
-        txt: "CHASSE POSSIBLE",
-        sub: `À vérifier sur place • ${best.name}`,
-        color: "#ffcc4d"
+        txt: `🏆 MEILLEUR SPOT : ${best.name}`,
+        sub: `Bonnes conditions • ${best.score}/10`,
+        color: best.color
       };
     }
 
-    return {
-      txt: "CHASSE DÉCONSEILLÉE",
-      sub: "Mer trop formée sur les spots",
-      color: "#ff5c5c"
-    };
-  }
+    if (best.score >= 4) {
+      return {
+        txt: `🏆 MEILLEUR SPOT : ${best.name}`,
+        sub: `Chasse possible mais à vérifier • ${best.score}/10`,
+        color: best.color
+      };
+    }
+
+  return {
+    txt: "CHASSE DÉCONSEILLÉE",
+    sub: `Meilleur spot : ${best.name} • ${best.score}/10`,
+    color: best.color
+  };
+}
 
   spotCard(spot, data) {
     const currentVelocity = this.getState(spot.current_velocity_entity);
