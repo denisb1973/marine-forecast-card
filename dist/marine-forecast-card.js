@@ -165,6 +165,7 @@ class MarineForecastCard extends HTMLElement {
 
         <style>
           ha-card {
+            width: 100%;
             border-radius: 22px;
             overflow: hidden;
             background: rgba(0,15,35,0.95);
@@ -204,14 +205,15 @@ class MarineForecastCard extends HTMLElement {
 
           .content {
             width: 100%;
-            max-width: 980px;
-            margin: 0 auto;
+            max-width: none;
+            margin: 0;
           }
 
-          .spots {
-            display: grid;
-            grid-template-columns: repeat(${Math.max(spots.length, 1)}, 1fr);
-            gap: 14px;
+         .spots {
+           width: 100%;
+           display: grid;
+           grid-template-columns: repeat(${Math.max(spots.length, 1)}, minmax(0, 1fr));
+           gap: 14px;
           }
 
           .spot {
