@@ -310,7 +310,7 @@ class MarineForecastCard extends HTMLElement {
          .spots {
            width: 100%;
            display: grid;
-           grid-template-columns: repeat(${Math.max(spots.length, 1)}, minmax(0, 1fr));
+           grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
            gap: 14px;
           }
 
