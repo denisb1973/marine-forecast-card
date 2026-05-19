@@ -166,6 +166,7 @@ class MarineForecastCard extends HTMLElement {
         <style>
           ha-card {
             width: 100%;
+            max-width: 100%;
             border-radius: 22px;
             overflow: hidden;
             background: rgba(0,15,35,0.95);
@@ -359,8 +360,14 @@ class MarineForecastCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 6;
-  }
+  return 20;
 }
 
+getLayoutOptions() {
+  return {
+    grid_columns: 12,
+    grid_rows: 8
+  };
+}
+}
 customElements.define("marine-forecast-card", MarineForecastCard);
