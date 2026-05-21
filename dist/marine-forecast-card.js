@@ -361,16 +361,24 @@ class MarineForecastCard extends HTMLElement {
           .map-button {
             position: absolute;
             right: 8px;
-            top: 0;
-            width: 34px;
-            height: 34px;
+            top: 8px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            border: 1px solid rgba(126,232,255,0.55);
-            background: rgba(0,20,40,0.72);
+            border: 1px solid rgba(126,232,255,0.35);
+            background: rgba(0,20,40,0.55);
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
-           box-shadow: 0 0 12px rgba(0,200,255,0.45);
+            opacity: 0.85;
+            box-shadow: 0 0 8px rgba(0,200,255,0.25);
+            transition: all 0.2s ease;
+          }
+
+           .map-button:hover {
+            opacity: 1;
+            transform: scale(1.08);
+            box-shadow: 0 0 14px rgba(0,200,255,0.45);
           }
 
           .badge {
