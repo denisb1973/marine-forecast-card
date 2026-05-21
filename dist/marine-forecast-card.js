@@ -8,6 +8,17 @@ class MarineForecastCard extends HTMLElement {
     this._hass = hass;
     this.render();
   }
+  static getConfigElement() {
+    return document.createElement("marine-forecast-card-editor");
+  }
+
+  static getStubConfig() {
+    return {
+      title: "Chasse sous-marine",
+      conclusion_image: "/local/plongeur.jpg",
+      spots: []
+    };
+  }
 
   getState(entity) {
     return this._hass?.states?.[entity]?.state ?? "-";
@@ -520,4 +531,166 @@ getLayoutOptions() {
   };
 }
 }
+class MarineForecastCardEditor extends HTMLElement {
+  setConfig(config) {
+    this.config = config || {};
+    this.render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+  }
+
+  updateConfig(newConfig) {
+    this.config = {
+      ...this.config,
+      ...newConfig
+    };
+
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config: this.config },
+      bubbles: true,
+      composed: true
+    }));
+
+    this.render();
+  }
+
+  updateSpot(index, key, value) {
+    const spots = [...(this.config.spots || [])];
+    spots[index] = {
+      ...spots[index],
+      [key]: value
+    };
+    this.updateConfig({ spots });
+  }
+
+  addSpot() {
+    const spots = [...(this.config.spots || [])];
+
+    spots.push({
+      name: "NOUVEAU SPOT",
+      image: "/local/spot.jpg",
+      lat: "",
+      lon: "",
+      forecast_entity: "",
+      current_velocity_entity: "",
+      current_direction_entity: ""
+    });
+
+    this.updateConfig({ spots });
+  }
+
+  removeSpot(index) {
+    const spots = [...(this.config.spots || [])];
+    spots.splice(index, 1);
+    this.updateConfig({ spots });
+  }
+
+  render() {
+    const spots = this.config.spots || [];
+
+    this.innerHTML = `
+      <div style="padding:16px;">
+        <h3>Marine Forecast Card</h3>
+
+        <label>Titre</label>
+        <input
+          value="${this.config.title || ""}"
+          onchange="this.getRootNode().host.updateConfig({ title: this.value })"
+        />
+
+        <label>Image conclusion</label>
+        <input
+          value="${this.config.conclusion_image || ""}"
+          onchange="this.getRootNode().host.updateConfig({ conclusion_image: this.value })"
+        />
+
+        <hr>
+
+        <h4>Spots</h4>
+
+        ${spots.map((spot, index) => `
+          <div class="spot-editor">
+            <b>Spot ${index + 1}</b>
+
+            <label>Nom</label>
+            <input value="${spot.name || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'name', this.value)" />
+
+            <label>Image</label>
+            <input value="${spot.image || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'image', this.value)" />
+
+            <label>Latitude</label>
+            <input value="${spot.lat || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'lat', this.value)" />
+
+            <label>Longitude</label>
+            <input value="${spot.lon || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'lon', this.value)" />
+
+            <label>Entité prévision marine</label>
+            <input value="${spot.forecast_entity || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'forecast_entity', this.value)" />
+
+            <label>Entité vitesse courant</label>
+            <input value="${spot.current_velocity_entity || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'current_velocity_entity', this.value)" />
+
+            <label>Entité direction courant</label>
+            <input value="${spot.current_direction_entity || ""}" onchange="this.getRootNode().host.updateSpot(${index}, 'current_direction_entity', this.value)" />
+
+            <button class="delete" onclick="this.getRootNode().host.removeSpot(${index})">
+              Supprimer ce spot
+            </button>
+          </div>
+        `).join("")}
+
+        <button class="add" onclick="this.getRootNode().host.addSpot()">
+          + Ajouter un spot
+        </button>
+
+        <style>
+          input {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 4px 0 12px;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #999;
+          }
+
+          label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+          }
+
+          .spot-editor {
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+          }
+
+          button {
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 700;
+            cursor: pointer;
+          }
+
+          .add {
+            background: #03a9f4;
+            color: white;
+          }
+
+          .delete {
+            background: #e53935;
+            color: white;
+            margin-top: 8px;
+          }
+        </style>
+      </div>
+    `;
+  }
+}
+
+customElements.define("marine-forecast-card-editor", MarineForecastCardEditor);
 customElements.define("marine-forecast-card", MarineForecastCard);
