@@ -147,7 +147,7 @@ class MarineForecastCard extends HTMLElement {
     const currentDirection = this.getState(spot.current_direction_entity);
 
     const mapsUrl = spot.lat && spot.lon
-      ? `https://www.google.com/maps?q=${spot.lat},${spot.lon}`
+      ? `https://www.google.com/maps/search/?api=1&query=${spot.lat},${spot.lon}`
       : null;
 
     return `
